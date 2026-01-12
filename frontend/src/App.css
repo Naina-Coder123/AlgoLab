@@ -1,0 +1,52 @@
+/* App.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  background: #020617;
+  color: #ffffff;
+}
+
+.app-container {
+  padding: 40px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.app-title {
+  font-size: 2rem;
+  text-align: center;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff, 0 0 16px #00f0ff;
+  margin-bottom: 8px;
+}
+
+.app-subtitle {
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
+
+.status-text {
+  text-align: center;
+  font-weight: 600;
+  margin-top: 12px;
+  transition: all 0.3s ease;
+}
+
+.status-idle {
+  color: #60a5fa;
+}
+
+.status-running {
+  color: #facc15;
+  text-shadow: 0 0 6px #facc15;
+}
+
+.status-finished {
+  color: #22c55e;
+  text-shadow: 0 0 6px #22c55e;
+}

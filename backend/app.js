@@ -1,13 +1,22 @@
-const express=require('express');
-const cors=require('cors');
-const sortingRoutes=require("./routes/sortingRoutes");
+const express = require("express");
+const path = require("path");
 
-const app=express();
+const app = express();
 
-app.use(cors());//cross origin Resource sharing is a security feature implemented in web browsers that allows ot restricts resources requested from a different domain 
-//it prevents malicious website read the sensitive data from the website where the user is authenticated
-
-
+/* ✅ 1. parse JSON */
 app.use(express.json());
-app.use("/api/sort",sortingRoutes);
-module.exports=app;
+
+/* ✅ 2. mount sorting route */
+const sortingRoutes = require("./routes/sortingRoutes");
+app.use("/api/sort", sortingRoutes);
+
+/* ✅ 3. serve frontend */
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
+
+/* ✅ 4. fallback LAST */
+app.use((req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+module.exports = app;
