@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import Visualizer from "./components/Visualizer";
 import ControlPanel from "./components/ControlPanel";
 import AlgorithmSelector from "./components/AlgorithmSelector";
 import Legend from "./components/Legend";
 import Footer from "./components/Footer";
+import AIExplanation from "./components/AIExplanation";
 import { useAnimator } from "./hooks/useAnimator";
 import "./App.css";
 
@@ -12,11 +13,40 @@ const App = () => {
   const [inputArray, setInputArray] = useState("5,3,8,4,2");
   const [steps, setSteps] = useState([]);
   const [initialArray, setInitialArray] = useState([]);
-
+   const [explanation, setExplanation] = useState("");
+  const [loadingAI, setLoadingAI] = useState(false);
   const { array, highlights, play, pause, reset, setSpeed, status } = useAnimator(
     steps,
     initialArray
   );
+
+  const generateAIExplanation = async (userPrompt) => {
+  try {
+    setLoadingAI(true);
+
+    const res = await fetch("/api/ai/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        algorithm,
+        prompt: userPrompt,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setExplanation(data.explanation);
+    } else {
+      setExplanation(data.error || "AI failed to respond");
+    }
+  } catch (err) {
+    console.error("AI request failed", err);
+    setExplanation("Cannot reach AI backend");
+  } finally {
+    setLoadingAI(false);
+  }
+};
 
   const parseInput = () => {
     const arr = inputArray
@@ -52,6 +82,7 @@ const App = () => {
   };
 
   return (
+    <div className="app-layout">
     <div className="app-container">
       {/* Title */}
       <h1 className="app-title">Sorting Algorithm Visualizer</h1>
@@ -104,7 +135,8 @@ const App = () => {
         {status === "idle" && "▶ Ready to start"}
         {status === "running" && "🔄 Sorting in progress..."}
         {status === "finished" && "✅ Array Sorted"}
-      </p>
+       </p>
+       
 
       {/* Legend */}
       <Legend />
@@ -112,9 +144,16 @@ const App = () => {
       {/* Controls */}
       <ControlPanel onPlay={play} onPause={pause} onReset={reset} onSpeedChange={setSpeed} />
 
+
+      
       {/* Footer */}
       <Footer />
     </div>
+    {/* AI Explanation */}
+      <AIExplanation explanation={explanation} loading={loadingAI}
+  onGenerate={generateAIExplanation}
+ />
+     </div>
   );
 };
 
