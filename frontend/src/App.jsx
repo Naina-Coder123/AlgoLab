@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import Visualizer from "./components/Visualizer";
 import ControlPanel from "./components/ControlPanel";
 import AlgorithmSelector from "./components/AlgorithmSelector";
@@ -13,40 +13,14 @@ const App = () => {
   const [inputArray, setInputArray] = useState("5,3,8,4,2");
   const [steps, setSteps] = useState([]);
   const [initialArray, setInitialArray] = useState([]);
-   const [explanation, setExplanation] = useState("");
+  const [complexity, setComplexity] = useState(null);
+  const [explanation, setExplanation] = useState("");
   const [loadingAI, setLoadingAI] = useState(false);
+
   const { array, highlights, play, pause, reset, setSpeed, status } = useAnimator(
     steps,
     initialArray
   );
-
-  const generateAIExplanation = async (userPrompt) => {
-  try {
-    setLoadingAI(true);
-
-    const res = await fetch("/api/ai/explain", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        algorithm,
-        prompt: userPrompt,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      setExplanation(data.explanation);
-    } else {
-      setExplanation(data.error || "AI failed to respond");
-    }
-  } catch (err) {
-    console.error("AI request failed", err);
-    setExplanation("Cannot reach AI backend");
-  } finally {
-    setLoadingAI(false);
-  }
-};
 
   const parseInput = () => {
     const arr = inputArray
@@ -69,91 +43,95 @@ const App = () => {
       });
       const data = await res.json();
 
-      if (res.ok) {
+      if (res.ok && Array.isArray(data.steps)) {
         setSteps(data.steps);
-        reset(); // reset animator
+        setComplexity(data.complexity); // store complexity
+        reset();
       } else {
         alert(data.error || "Something went wrong");
       }
     } catch (err) {
-      alert("Cannot reach backend. Make sure server is running!");
+      alert("Cannot reach backend. Make sure the server is running!");
       console.error(err);
+    }
+  };
+
+  const generateAIExplanation = async (userPrompt) => {
+    try {
+      setLoadingAI(true);
+      const res = await fetch("/api/ai/explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ algorithm, prompt: userPrompt }),
+      });
+      const data = await res.json();
+      setExplanation(res.ok ? data.explanation : data.error || "AI failed to respond");
+    } catch (err) {
+      console.error("AI request failed", err);
+      setExplanation("Cannot reach AI backend");
+    } finally {
+      setLoadingAI(false);
     }
   };
 
   return (
     <div className="app-layout">
-    <div className="app-container">
-      {/* Title */}
-      <h1 className="app-title">Sorting Algorithm Visualizer</h1>
-      <p className="app-subtitle">Visual representation of how sorting algorithms work step by step</p>
+      <header className="app-header">
+        <h1>Sorting Algorithm Visualizer</h1>
+        <p>Step-by-step visual representation of sorting algorithms</p>
+      </header>
 
-      {/* Algorithm Picker */}
-      <AlgorithmSelector active={algorithm} onChange={setAlgorithm} />
+      <div className="main-content">
+        {/* Left Column */}
+        <div className="left-column">
+          <AlgorithmSelector active={algorithm} onChange={setAlgorithm} />
 
-      {/* Input array */}
-      <div style={{ marginBottom: "24px", textAlign: "center" }}>
-        <input
-          type="text"
-          placeholder="Enter array, e.g., 5,3,8,4,2"
-          value={inputArray}
-          onChange={(e) => setInputArray(e.target.value)}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "8px",
-            border: "2px solid #6366f1",
-            background: "#020617",
-            color: "#ffffff",
-            fontFamily: "Roboto Mono, monospace",
-            width: "300px",
-            textAlign: "center",
-          }}
-        />
-        <button
-          onClick={runAlgorithm}
-          style={{
-            marginLeft: "12px",
-            padding: "8px 16px",
-            borderRadius: "8px",
-            border: "none",
-            fontWeight: "600",
-            cursor: "pointer",
-            background: "linear-gradient(135deg, #6366f1, #22d3ee)",
-            color: "#ffffff",
-            boxShadow: "0 0 8px rgba(99,102,241,0.6)",
-          }}
-        >
-          Run
-        </button>
+          <div className="input-section">
+            <input
+              type="text"
+              placeholder="Enter array, e.g., 5,3,8,4,2"
+              value={inputArray}
+              onChange={(e) => setInputArray(e.target.value)}
+            />
+            <button onClick={runAlgorithm}>Run</button>
+          </div>
+
+          <Visualizer
+            array={array}
+            highlights={highlights}
+            complexity={complexity}
+            status={status}
+          />
+
+          <div className="status-legend">
+            <p className={`status-text ${status}`}>
+              {status === "idle" && "⏯ Ready to start"}
+              {status === "running" && "⚡ Sorting in progress..."}
+              {status === "finished" && "✅ Array Sorted"}
+            </p>
+            <Legend />
+          </div>
+
+          <ControlPanel
+            onPlay={play}
+            onPause={pause}
+            onReset={reset}
+            onSpeedChange={setSpeed}
+          />
+        </div>
+
+        {/* Right Column: AI Panel */}
+        <div className="right-column">
+          <AIExplanation
+            explanation={explanation}
+            loading={loadingAI}
+            onGenerate={generateAIExplanation}
+          />
+        </div>
       </div>
 
-      {/* Visualizer */}
-      <Visualizer array={array} highlights={highlights} />
-
-      {/* Status */}
-      <p className={`status-text ${status}`}>
-        {status === "idle" && "▶ Ready to start"}
-        {status === "running" && "🔄 Sorting in progress..."}
-        {status === "finished" && "✅ Array Sorted"}
-       </p>
-       
-
-      {/* Legend */}
-      <Legend />
-
-      {/* Controls */}
-      <ControlPanel onPlay={play} onPause={pause} onReset={reset} onSpeedChange={setSpeed} />
-
-
-      
-      {/* Footer */}
       <Footer />
     </div>
-    {/* AI Explanation */}
-      <AIExplanation explanation={explanation} loading={loadingAI}
-  onGenerate={generateAIExplanation}
- />
-     </div>
   );
 };
 

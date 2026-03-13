@@ -5,8 +5,7 @@ const AIExplanation = ({ explanation, loading, onGenerate }) => {
   const [prompt, setPrompt] = useState("");
 
   return (
-    <div className={`ai-panel ${collapsed ? "collapsed" : ""}`}>
-      {/* Header */}
+     <div className={`ai-panel ${collapsed ? "collapsed" : ""}`}>      {/* Header */}
       <div className="ai-header">
         <h2>AI Assistant</h2>
         <button

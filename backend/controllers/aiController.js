@@ -4,6 +4,7 @@ exports.explainAlgorithm = async (req, res) => {
   try {
     const { algorithm, prompt } = req.body;
 
+    // If no algorithm is provided, just use the prompt directly
     const explanation = await getAlgorithmExplanation(
       algorithm,
       prompt

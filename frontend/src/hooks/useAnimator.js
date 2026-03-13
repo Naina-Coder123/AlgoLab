@@ -10,38 +10,27 @@ export const useAnimator = (steps, initialArray) => {
   const speedRef = useRef(500);
   const isPlayingRef = useRef(false);
 
-  const runStep = () => {
-    if (!isPlayingRef.current) return;
+const runStep = () => {
+  if (!isPlayingRef.current) return;
 
-    if (stepRef.current >= steps.length) {
-      setStatus("finished");
-      setHighlights({});
-      isPlayingRef.current = false;
-      return;
-    }
+  if (stepRef.current >= steps.length) {
+    setStatus("finished");
+    setHighlights([]);
+    isPlayingRef.current = false;
+    return;
+  }
 
-    const step = steps[stepRef.current];
-    setHighlights({});
+  const step = steps[stepRef.current];
 
-    switch (step.type) {
-      case ACTIONS.COMPARE:
-      case ACTIONS.SWAP:
-      case ACTIONS.OVERWRITE:
-      case ACTIONS.PIVOT:
-      case ACTIONS.RECURSION:
-      case ACTIONS.COUNT:
-      case ACTIONS.PREFIX:
-      case ACTIONS.GAP:
-        setArray(step.array || array);
-        setHighlights({ [step.index ?? 0]: step.type });
-        break;
-      default:
-        break;
-    }
+  if (step.array) {
+    setArray(step.array);
+  }
 
-    stepRef.current++;
-    setTimeout(runStep, speedRef.current);
-  };
+  setHighlights(step.highlights || []);
+
+  stepRef.current++;
+  setTimeout(runStep, speedRef.current);
+};
 
   const play = () => {
     if (isPlayingRef.current) return;
@@ -62,5 +51,17 @@ export const useAnimator = (steps, initialArray) => {
     setStatus("idle");
   };
 
-  return { array, highlights, play, pause, reset, setSpeed: (speed) => (speedRef.current = speed), status };
+  const setSpeed = (speed) => {
+    speedRef.current = speed;
+  };
+
+  return {
+    array,
+    highlights,
+    play,
+    pause,
+    reset,
+    setSpeed,
+    status,
+  };
 };

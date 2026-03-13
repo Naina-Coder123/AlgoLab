@@ -1,51 +1,54 @@
-module.exports=function shellSort(inputArray){
-    const arr=[...inputArray];
-    const steps=[];
-    const n=arr.length;
+module.exports = function shellSort(inputArray) {
+  const array = [...inputArray];
+  const steps = [];
+  const n = array.length;
 
-    for(let gap=Math.floor(n/2);gap>0;gap=Math.floor(gap/2)){
+  // Start with a big gap, then reduce
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    steps.push({
+      array: [...array],
+      highlights: [],
+      type: "gap",
+      gap,
+    });
+
+    for (let i = gap; i < n; i++) {
+      let temp = array[i];
+      let j = i;
+
+      while (j >= gap && array[j - gap] > temp) {
         steps.push({
-            type:"gap",
-            gap,
-            array:[...arr],
+          array: [...array],
+          highlights: [
+            { index: j - gap, type: "compare" },
+            { index: j, type: "compare" },
+          ],
+          type: "compare",
         });
 
-        for(let i=gap;i<n;i++){
-            let temp=arr[i];
-            let j=i;
-            while(j>=gap && arr[j-gap]<temp){
-                steps.push({
-                    type:"compare",
-                    indices:[j-gap,j],
-                    array:[...arr],
-                });
-                arr[j]=arr[j-gap];
-                steps.push({
-                    type:"overwrite",
-                    index:j,
-                    value:arr[j],
-                    array:[...arr],
-                });
+        array[j] = array[j - gap];
 
-                j-=gap;
-            }
+        steps.push({
+          array: [...array],
+          highlights: [{ index: j, type: "overwrite" }],
+          type: "overwrite",
+        });
 
-            arr[j]=temp;
-            steps.push({
-                type:"overwrite",
-                index:j,
-                value:temp,
-                array:[...arr],
-            });
-        }
+        j -= gap;
+      }
+
+      array[j] = temp;
+
+      steps.push({
+        array: [...array],
+        highlights: [{ index: j, type: "overwrite" }],
+        type: "overwrite",
+      });
     }
+  }
 
-    return {
-        steps,
-        complexity:{
-            time:"O(log n ) to O(n^2)",
-            space:"O(1)",
-            stable:false,
-        },
-    };
+  return {
+    steps,
+    complexity: { time: "O(n log n) to O(n^2)", space: "O(1)", stable: false },
+  };
 };

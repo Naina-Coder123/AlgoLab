@@ -1,87 +1,67 @@
-module.exports=function mergeSort(inputArray){
-    const array=[...inputArray];
-    const steps=[];
-    const aux=[...array];
+module.exports = function mergeSort(inputArray) {
+  const array = [...inputArray];
+  const steps = [];
+  const aux = [...array];
 
-    //for merge sort i used an auxiliary array and generated overwrite steps instead of swaps ,because merge sort reconstructs the array rather than swapping elements
+  function mergeHelper(start, end, depth) {
+    if (start >= end) return;
 
-    mergeSortHelper(array,0,array.length-1,aux,steps);
+    const mid = Math.floor((start + end) / 2);
+    mergeHelper(start, mid, depth + 1);
+    mergeHelper(mid + 1, end, depth + 1);
+    merge(start, mid, end);
+  }
 
-    return{
-        steps,
-        complexity:{
-            time:"O(n logn)",
-            space:"O(n)",
-            stable:true,
-        },
-    };
+  function merge(start, mid, end) {
+    let i = start, j = mid + 1, k = start;
+
+    while (i <= mid && j <= end) {
+      steps.push({
+        array: [...array],
+        highlights: [{ index: i, type: "compare" }, { index: j, type: "compare" }],
+        type: "compare",
+      });
+
+      if (aux[i] <= aux[j]) {
+        array[k] = aux[i++];
+      } else {
+        array[k] = aux[j++];
+      }
+
+      steps.push({
+        array: [...array],
+        highlights: [{ index: k, type: "overwrite" }],
+        type: "overwrite",
+      });
+
+      k++;
+    }
+
+    while (i <= mid) {
+      array[k] = aux[i++];
+      steps.push({
+        array: [...array],
+        highlights: [{ index: k, type: "overwrite" }],
+        type: "overwrite",
+      });
+      k++;
+    }
+
+    while (j <= end) {
+      array[k] = aux[j++];
+      steps.push({
+        array: [...array],
+        highlights: [{ index: k, type: "overwrite" }],
+        type: "overwrite",
+      });
+      k++;
+    }
+  }
+
+  mergeHelper(0, array.length - 1, 0);
+
+  return {
+    steps,
+    complexity: { time: "O(n log n)", space: "O(n)", stable: true },
+  };
 };
-
-function mergeSortHelper(mainArray,start,end,auxArray,steps){
-    if(start>=end)return;
-
-      const mid=Math.floor((start+end)/2);
-
-      mergeSortHelper(auxArray,start,mid,mainArray,steps);
-      mergeSortHelper(auxArray,mid+1,end,mainArray,steps);
-      merge(mainArray,start,mid,end,auxArray,steps);
-}
-
-
-function merge(mainArray,start,mid,end,auxArray,steps){
-    let i=start;
-    let j=mid+1;
-    let k=start;
-
-    while(i<=mid && j<=end){
-        //compare
-
-        steps.push({
-            type:"compare",
-            indices:[i,j],
-            array:[...mainArray],
-        });
-
-        if(auxArray[i]<=auxArray[j]){
-            mainArray[k]=auxArray[i];
-            steps.push({
-                type:"overwrite",
-                indices:[k],
-                array:[...mainArray],
-            });
-            i++;
-        }else{
-            mainArray[k]=auxArray[j];
-            steps.push({
-                type:"overwrite",
-                indices:[k],
-                array:[...mainArray],
-            });
-            j++;
-        }
-        k++;
-    }
-
-    while(i<=mid){
-        mainArray[k]=auxArray[i];
-        steps.push({
-            type:"overwrite",
-            indices:[k],
-            array:[...mainArray],
-
-        });
-        i++;
-        k++;
-    }
-
-    while(j<=end){
-        mainArray[k]=auxArray[j];
-        steps.push({
-            type:"overwrite",
-            indices:[k],
-            array:[...mainArray],
-        });
-        j++;
-        k++;
-    }
-}

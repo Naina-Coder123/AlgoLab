@@ -1,22 +1,25 @@
-module.exports=function bucketSort(inputArray){
-    const arr=[...inputArray];
-    const steps=[];
+module.exports = function bucketSort(inputArray) {
+  const arr = [...inputArray];
+  const steps = [];
 
-    if(arr.length===0)return {steps};
+  if (arr.length === 0) return { steps };
 
-    const max=Math.max(...arr);
-    const bucketCount=Math.floor(Math.sqrt(arr.length))||1;
-    const buckets=Array.from({length:bucketCount},()=>[]);
+  const max = Math.max(...arr);
+  const bucketCount = Math.floor(Math.sqrt(arr.length)) || 1;
+  const buckets = Array.from({ length: bucketCount }, () => []);
 
-for (let val of arr) {
+  // Insert elements into buckets
+  for (let val of arr) {
     const idx = Math.floor((val / (max + 1)) * bucketCount);
     buckets[idx].push(val);
 
     steps.push({
-      type: "bucket-insert",
-      bucket: idx,
-      value: val,
+      highlights: [], // optionally could highlight bucket insertion differently
+      array: [...arr],
       buckets: buckets.map(b => [...b]),
+      type: "bucket-insert",
+      valueInserted: val,
+      bucketIndex: idx,
     });
   }
 
@@ -26,14 +29,15 @@ for (let val of arr) {
     buckets[b].sort((a, b) => a - b);
 
     for (let val of buckets[b]) {
-      arr[index++] = val;
+      arr[index] = val;
 
       steps.push({
-        type: "overwrite",
-        index: index - 1,
-        value: val,
+        highlights: [{ index, type: "overwrite" }], // highlight bar being overwritten
         array: [...arr],
+        type: "overwrite",
       });
+
+      index++;
     }
   }
 
@@ -45,5 +49,4 @@ for (let val of arr) {
       stable: true,
     },
   };
-
 };

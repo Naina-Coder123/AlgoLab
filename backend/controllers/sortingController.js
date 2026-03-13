@@ -1,4 +1,4 @@
-const bubbleSort = require("../services/bubblesort");
+const bubbleSort = require("../services/bubbleSort");
 const insertionSort = require("../services/insertionSort");
 const selectionSort = require("../services/selectionSort");
 const mergeSort = require("../services/mergeSort");
