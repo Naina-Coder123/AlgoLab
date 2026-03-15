@@ -3,7 +3,6 @@ module.exports = function shellSort(inputArray) {
   const steps = [];
   const n = array.length;
 
-  // Start with a big gap, then reduce
   for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
     steps.push({
       array: [...array],
@@ -13,7 +12,7 @@ module.exports = function shellSort(inputArray) {
     });
 
     for (let i = gap; i < n; i++) {
-      let temp = array[i];
+      const temp = array[i];
       let j = i;
 
       while (j >= gap && array[j - gap] > temp) {
@@ -47,8 +46,20 @@ module.exports = function shellSort(inputArray) {
     }
   }
 
+  for (let i = 0; i < array.length; i++) {
+    steps.push({
+      array: [...array],
+      highlights: [{ index: i, type: "sorted" }],
+      type: "sorted",
+    });
+  }
+
   return {
     steps,
-    complexity: { time: "O(n log n) to O(n^2)", space: "O(1)", stable: false },
+    complexity: {
+      time: "O(n log n) to O(n^2)",
+      space: "O(1)",
+      stable: false,
+    },
   };
 };

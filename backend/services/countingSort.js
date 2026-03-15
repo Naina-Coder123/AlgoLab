@@ -1,7 +1,17 @@
 module.exports = function countingSort(inputArray) {
   const arr = [...inputArray];
   const steps = [];
-  if (arr.length === 0) return { steps, complexity: { time: "O(n+k)", space: "O(n+k)", stable: true } };
+
+  if (arr.length === 0) {
+    return {
+      steps,
+      complexity: {
+        time: "O(n + k)",
+        space: "O(n + k)",
+        stable: true,
+      },
+    };
+  }
 
   const max = Math.max(...arr);
   const count = new Array(max + 1).fill(0);
@@ -13,7 +23,6 @@ module.exports = function countingSort(inputArray) {
     steps.push({
       array: [...arr],
       highlights: [{ index: i, type: "count" }],
-      count: [...count],
       type: "count",
     });
   }
@@ -24,14 +33,14 @@ module.exports = function countingSort(inputArray) {
 
     steps.push({
       array: [...arr],
-      highlights: [{ index: i, type: "prefix" }],
-      count: [...count],
+      highlights: [],
       type: "prefix",
     });
   }
 
   // Step 3: Build output array
-  const output = new Array(arr.length);
+  const output = new Array(arr.length).fill(0);
+
   for (let i = arr.length - 1; i >= 0; i--) {
     const val = arr[i];
     const pos = count[val] - 1;
@@ -41,8 +50,16 @@ module.exports = function countingSort(inputArray) {
     steps.push({
       array: [...output],
       highlights: [{ index: pos, type: "overwrite" }],
-      count: [...count],
       type: "overwrite",
+    });
+  }
+
+  // Step 4: Mark sorted
+  for (let i = 0; i < output.length; i++) {
+    steps.push({
+      array: [...output],
+      highlights: [{ index: i, type: "sorted" }],
+      type: "sorted",
     });
   }
 

@@ -2,41 +2,61 @@ module.exports = function quickSort(inputArray) {
   const array = [...inputArray];
   const steps = [];
 
-  function helper(low, high, depth) {
-    if (low >= high) return;
+  function helper(low, high) {
+    if (low > high) return;
+
+    if (low === high) {
+      steps.push({
+        array: [...array],
+        highlights: [{ index: low, type: "sorted" }],
+        type: "sorted",
+      });
+      return;
+    }
 
     steps.push({
       array: [...array],
       highlights: [{ index: low, type: "pivot" }],
-      type: "recursion",
-      range: [low, high],
-      depth,
+      type: "pivot",
     });
 
     const pivotIndex = partition(low, high);
 
-    helper(low, pivotIndex - 1, depth + 1);
-    helper(pivotIndex + 1, high, depth + 1);
+    steps.push({
+      array: [...array],
+      highlights: [{ index: pivotIndex, type: "sorted" }],
+      type: "sorted",
+    });
+
+    helper(low, pivotIndex - 1);
+    helper(pivotIndex + 1, high);
   }
 
   function partition(low, high) {
     const pivot = array[low];
-    let i = low + 1, j = high;
+    let i = low + 1;
+    let j = high;
 
     while (i <= j) {
       while (i <= high && array[i] <= pivot) {
         steps.push({
           array: [...array],
-          highlights: [{ index: i, type: "compare" }, { index: low, type: "compare" }],
+          highlights: [
+            { index: i, type: "compare" },
+            { index: low, type: "pivot" },
+          ],
           type: "compare",
         });
         i++;
       }
 
-      while (array[j] > pivot) {
+      while (j > low && array[j] > pivot) {
         steps.push({
           array: [...array],
-          highlights: [{ index: j, type: "compare" }, { index: low, type: "compare" }],
+          highlights: [
+            { index: j, type: "compare" },
+            { index: low, type: "pivot" },
+          ],
           type: "compare",
         });
         j--;
@@ -44,9 +64,13 @@ module.exports = function quickSort(inputArray) {
 
       if (i < j) {
         [array[i], array[j]] = [array[j], array[i]];
+
         steps.push({
           array: [...array],
-          highlights: [{ index: i, type: "swap" }, { index: j, type: "swap" }],
+          highlights: [
+            { index: i, type: "swap" },
+            { index: j, type: "swap" },
+          ],
           type: "swap",
         });
       }
@@ -54,9 +78,13 @@ module.exports = function quickSort(inputArray) {
 
     if (j !== low) {
       [array[low], array[j]] = [array[j], array[low]];
+
       steps.push({
         array: [...array],
-        highlights: [{ index: low, type: "swap" }, { index: j, type: "swap" }],
+        highlights: [
+          { index: low, type: "swap" },
+          { index: j, type: "swap" },
+        ],
         type: "swap",
       });
     }
@@ -64,10 +92,23 @@ module.exports = function quickSort(inputArray) {
     return j;
   }
 
-  helper(0, array.length - 1, 0);
+  helper(0, array.length - 1);
+
+  // Final pass to ensure fully sorted visualization
+  for (let i = 0; i < array.length; i++) {
+    steps.push({
+      array: [...array],
+      highlights: [{ index: i, type: "sorted" }],
+      type: "sorted",
+    });
+  }
 
   return {
     steps,
-    complexity: { time: "O(n log n) avg, O(n^2) worst", space: "O(log n)", stable: false },
+    complexity: {
+      time: "O(n log n) avg, O(n^2) worst",
+      space: "O(log n)",
+      stable: false,
+    },
   };
 };

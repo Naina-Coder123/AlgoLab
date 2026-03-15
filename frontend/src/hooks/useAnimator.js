@@ -1,67 +1,94 @@
-import { useState, useRef } from "react";
-import { ACTIONS } from "../engine/actionTypes";
+import { useState, useRef, useEffect, useCallback } from "react";
 
-export const useAnimator = (steps, initialArray) => {
+export const useAnimator = (steps = [], initialArray = []) => {
   const [array, setArray] = useState(initialArray);
-  const [highlights, setHighlights] = useState({});
+  const [highlights, setHighlights] = useState([]);
   const [status, setStatus] = useState("idle");
 
   const stepRef = useRef(0);
-  const speedRef = useRef(500);
-  const isPlayingRef = useRef(false);
+  const speedRef = useRef(400);
+  const timerRef = useRef(null);
+  const playingRef = useRef(false);
 
-const runStep = () => {
-  if (!isPlayingRef.current) return;
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
 
-  if (stepRef.current >= steps.length) {
-    setStatus("finished");
-    setHighlights([]);
-    isPlayingRef.current = false;
-    return;
-  }
+  const stopAnimation = useCallback(() => {
+    playingRef.current = false;
+    clearTimer();
+  }, [clearTimer]);
 
-  const step = steps[stepRef.current];
+  const play = useCallback(() => {
+    if (!steps.length) return;
+    if (playingRef.current) return;
 
-  if (step.array) {
-    setArray(step.array);
-  }
+    playingRef.current = true;
+    setStatus("playing");
 
-  setHighlights(step.highlights || []);
+    const tick = () => {
+      if (!playingRef.current) return;
 
-  stepRef.current++;
-  setTimeout(runStep, speedRef.current);
-};
+      if (stepRef.current >= steps.length) {
+        stopAnimation();
+        setHighlights([]);
+        setStatus("finished");
+        return;
+      }
 
-  const play = () => {
-    if (isPlayingRef.current) return;
-    isPlayingRef.current = true;
-    setStatus("running");
-    runStep();
-  };
+      const step = steps[stepRef.current];
 
-  const pause = () => {
-    isPlayingRef.current = false;
-  };
+      if (step && Array.isArray(step.array)) {
+        setArray(step.array);
+      }
 
-  const reset = () => {
-    isPlayingRef.current = false;
+      if (step && Array.isArray(step.highlights)) {
+        setHighlights(step.highlights);
+      } else {
+        setHighlights([]);
+      }
+
+      stepRef.current += 1;
+      timerRef.current = setTimeout(tick, speedRef.current);
+    };
+
+    tick();
+  }, [steps, stopAnimation]);
+
+  const pause = useCallback(() => {
+    stopAnimation();
+    setStatus("paused");
+  }, [stopAnimation]);
+
+  const reset = useCallback(() => {
+    stopAnimation();
     stepRef.current = 0;
     setArray(initialArray);
-    setHighlights({});
+    setHighlights([]);
     setStatus("idle");
-  };
+  }, [initialArray, stopAnimation]);
 
-  const setSpeed = (speed) => {
+  const setSpeed = useCallback((speed) => {
     speedRef.current = speed;
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      stopAnimation();
+    };
+  }, [stopAnimation]);
 
   return {
     array,
     highlights,
+    status,
     play,
     pause,
     reset,
     setSpeed,
-    status,
+    totalSteps: steps.length,
   };
 };

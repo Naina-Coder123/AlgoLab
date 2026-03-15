@@ -1,0 +1,50 @@
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 40, 0.88);
+  border: 1px solid rgba(34, 211, 238, 0.12);
+}
+
+.legend-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #dbe4f0;
+  font-family: "Inter", sans-serif;
+}
+
+.legend-compare {
+  background: linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%);
+}
+
+.legend-swap {
+  background: linear-gradient(180deg, #fb923c 0%, #f97316 100%);
+}
+
+.legend-overwrite {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+}
+
+.legend-pivot {
+  background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%);
+}
+
+.legend-sorted {
+  background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+}

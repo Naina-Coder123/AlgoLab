@@ -1,0 +1,46 @@
+.analyzer-chart-wrapper {
+  width: 100%;
+  height: 260px;
+}
+
+.analyzer-tooltip {
+  background: rgba(10, 16, 24, 0.96);
+  border: 1px solid rgba(34, 211, 238, 0.16);
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #f8fafc;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+.analyzer-tooltip-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.analyzer-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.tooltip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.tooltip-dot-steps {
+  background: #22d3ee;
+}
+
+.tooltip-dot-comparisons {
+  background: #38bdf8;
+}
+
+.tooltip-dot-writes {
+  background: #f59e0b;
+}

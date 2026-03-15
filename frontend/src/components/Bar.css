@@ -1,0 +1,118 @@
+.bar-item {
+  width: 30px;
+  min-height: 18px;
+  border-radius: 10px 10px 0 0;
+  margin: 0 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  align-self: flex-end;
+  transition:
+    height 0.3s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+  background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.bar-item:hover {
+  transform: translateY(-2px);
+}
+
+.bar-value {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.92);
+  margin-bottom: 8px;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Default */
+.bar-default {
+  background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 10px rgba(15, 23, 42, 0.18);
+}
+
+/* Highlight states */
+.bar-compare {
+  background: linear-gradient(180deg, #2dd4bf 0%, #14b8a6 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(20, 184, 166, 0.22);
+}
+
+.bar-swap {
+  background: linear-gradient(180deg, #fb923c 0%, #f97316 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(249, 115, 22, 0.22);
+}
+
+.bar-overwrite {
+  background: linear-gradient(180deg, #67e8f9 0%, #38bdf8 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(56, 189, 248, 0.22);
+}
+
+.bar-pivot {
+  background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(22, 163, 74, 0.22);
+}
+
+.bar-recursion {
+  background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(234, 179, 8, 0.22);
+  color: #111827;
+}
+
+.bar-count {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(16, 185, 129, 0.22);
+}
+
+.bar-prefix {
+  background: linear-gradient(180deg, #818cf8 0%, #6366f1 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(99, 102, 241, 0.22);
+}
+
+.bar-gap {
+  background: linear-gradient(180deg, #f472b6 0%, #ec4899 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(236, 72, 153, 0.22);
+}
+
+.bar-sorted {
+  background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(34, 197, 94, 0.22);
+}
+
+@media (max-width: 768px) {
+  .bar-item {
+    width: 22px;
+    margin: 0 2px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .bar-value {
+    font-size: 0.65rem;
+    margin-bottom: 6px;
+  }
+}

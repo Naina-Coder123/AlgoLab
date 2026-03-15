@@ -1,32 +1,14 @@
 import React from "react";
 import Bar from "./Bar";
+import "./Visualizer.css";
 
 const Visualizer = ({ array, highlights = [], complexity, status }) => {
   const maxValue = Math.max(...array, 1);
-
-  // Ensure highlights is always an array
   const safeHighlights = Array.isArray(highlights) ? highlights : [];
 
   return (
-    <div
-      style={{
-        marginTop: "32px",
-        background: "#1e293b",
-        padding: "24px",
-        borderRadius: "14px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
-        overflowX: "auto",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          gap: "6px",
-          height: "350px",
-        }}
-      >
+    <div className="visualizer-canvas">
+      <div className="visualizer-bars">
         {array.map((value, index) => {
           const highlightTypes = safeHighlights
             .filter((h) => h.index === index)
@@ -45,18 +27,9 @@ const Visualizer = ({ array, highlights = [], complexity, status }) => {
         })}
       </div>
 
-      {/* Complexity display */}
       {status === "finished" && complexity && (
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "16px",
-            color: "#14b8a6",
-            fontWeight: 600,
-            fontSize: "14px",
-          }}
-        >
-          ✅ Array Sorted | Time: {complexity.time}, Space: {complexity.space} | Stable:{" "}
+        <p className="visualizer-complexity">
+          Array Sorted | Time: {complexity.time}, Space: {complexity.space} | Stable:{" "}
           {complexity.stable ? "Yes" : "No"}
         </p>
       )}

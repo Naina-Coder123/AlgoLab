@@ -1,19 +1,37 @@
+import "./ControlPanel.css";
+
 const ControlPanel = ({ onPlay, onPause, onReset, onSpeedChange }) => {
   return (
-    <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "16px", flexWrap: "wrap" }}>
-      {["▶ Play", "⏸ Pause", "⟲ Reset"].map((label, i) => (
-        <button
-          key={i}
-          onClick={[onPlay, onPause, onReset][i]}
-          style={{ padding: "8px 16px", borderRadius: "8px", background: "linear-gradient(135deg, #6366f1, #22d3ee)", color: "#fff", fontWeight: 600, cursor: "pointer" }}
-        >
-          {label}
+    <div className="control-panel">
+      <div className="control-actions">
+        <button className="control-btn control-btn-play" onClick={onPlay}>
+          ▶ Play
         </button>
-      ))}
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center", color: "#fff" }}>
-        <label>Speed</label>
-        <input type="range" min="50" max="1000" step="50" defaultValue="500" onChange={(e) => onSpeedChange(Number(e.target.value))} />
+        <button className="control-btn control-btn-pause" onClick={onPause}>
+          ⏸ Pause
+        </button>
+
+        <button className="control-btn control-btn-reset" onClick={onReset}>
+          ⟲ Reset
+        </button>
+      </div>
+
+      <div className="speed-control">
+        <label htmlFor="speed-range" className="speed-label">
+          Speed
+        </label>
+
+        <input
+          id="speed-range"
+          className="speed-range"
+          type="range"
+          min="50"
+          max="1000"
+          step="50"
+          defaultValue="500"
+          onChange={(e) => onSpeedChange(Number(e.target.value))}
+        />
       </div>
     </div>
   );
